@@ -78,7 +78,7 @@ public class CustomerServiceImpl implements CustomerService {
 			driverRepository2.save(availableDriver);
 
 		}catch (Exception e){
-			throw new Exception("No cab available!");
+			throw new Exception("No value present");
 		}
 
 		return tripBooking;
