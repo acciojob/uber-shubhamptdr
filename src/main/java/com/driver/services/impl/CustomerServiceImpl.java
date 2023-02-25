@@ -52,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
 //			tripBooking.setStatus(TripStatus.CANCELED);
 			Driver availableDriver = null;
 			for(Driver driver : driverList){
-				if(driver.getCab().isAvailable()){
+				if(driver.getCab().getAvailable()){
 					availableDriver = driver;
 					break;
 				}
