@@ -3,7 +3,7 @@ package com.driver.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "cab")
+@Table
 public
 class Cab{
     @Id
@@ -12,9 +12,8 @@ class Cab{
     private int perKmRate;
     private boolean available;
 
-    // child wrt to driver
-    @OneToOne
-    @JoinColumn
+    // parent wrt to driver
+    @OneToOne(mappedBy = "cab",cascade = CascadeType.ALL)
     private Driver driver;
 
     public Cab() {

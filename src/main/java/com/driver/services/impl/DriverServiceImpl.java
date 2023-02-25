@@ -1,6 +1,8 @@
 package com.driver.services.impl;
 
 import com.driver.model.Cab;
+import com.driver.model.TripBooking;
+import com.driver.model.TripStatus;
 import com.driver.repository.CabRepository;
 import com.driver.services.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.driver.model.Driver;
 import com.driver.repository.DriverRepository;
+
+import java.util.List;
 
 @Service
 public class DriverServiceImpl implements DriverService {
@@ -32,7 +36,17 @@ public class DriverServiceImpl implements DriverService {
 	@Override
 	public void removeDriver(int driverId){
 		// Delete driver without using deleteById function
-		driverRepository3.deleteById(driverId);
+		Driver driver = driverRepository3.findById(driverId).get();
+		Cab cab = driver.getCab();
+		cabRepository3.delete(cab);
+		List<TripBooking> tripBookingList = driver.getTripBookingList();
+
+		for(TripBooking tripBooking : tripBookingList){
+			if(tripBooking.getStatus() == TripStatus.CONFIRMED){
+				tripBooking.setStatus(TripStatus.CANCELED);
+			}
+		}
+		driverRepository3.delete(driver);
 
 	}
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "driver")
+@Table
 public
 class Driver{
     @Id
@@ -15,7 +15,8 @@ class Driver{
     private String password;
 
     // parent wrt to cab
-    @OneToOne(mappedBy = "driver",cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn
     private Cab cab;
 
     // parent wrt to tripBooking
