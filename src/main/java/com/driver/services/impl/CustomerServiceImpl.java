@@ -51,13 +51,9 @@ public class CustomerServiceImpl implements CustomerService {
 		//Avoid using SQL query
 		Customer customer = customerRepository2.findById(customerId).get();
 		List<Driver> driverList = driverRepository2.findAll();
-		TripBooking tripBooking;
 
-//			tripBooking = new TripBooking();
-//			tripBooking.setFromLocation(fromLocation);
-//			tripBooking.setToLocation(toLocation);
-//			tripBooking.setDistanceInKm(distanceInKm);
-//			tripBooking.setStatus(TripStatus.CANCELED);
+
+
 			Driver availableDriver = null;
 			for(Driver driver : driverList){
 				if(driver.getCab().getAvailable()){
@@ -68,27 +64,25 @@ public class CustomerServiceImpl implements CustomerService {
 			if(availableDriver == null){
 				throw new Exception("No cab available!");
 			}
-			Cab cab = availableDriver.getCab();
-			cab.setAvailable(false);
-			availableDriver.setCab(cab);
 
-			tripBooking = new TripBooking(fromLocation,toLocation,distanceInKm,cab.getPerKmRate()*distanceInKm,customer,availableDriver);
+
+			TripBooking tripBooking = new TripBooking();
+			tripBooking.setFromLocation(fromLocation);
+			tripBooking.setToLocation(toLocation);
+			tripBooking.setDistanceInKm(distanceInKm);
+			tripBooking.setCustomer(customer);
+			tripBooking.setDriver(availableDriver);
 			tripBooking.setStatus(TripStatus.CONFIRMED);
-			List<TripBooking>bookedTrip =  availableDriver.getTripBookingList();
-			bookedTrip.add(tripBooking);
-			availableDriver.setTripBookingList(bookedTrip);
 
+			availableDriver.getCab().setAvailable(false);
 
-			// in customer tripBookingList
-			List<TripBooking>bookedTripForCustomer =  customer.getTripBookingList();
-			bookedTripForCustomer.add(tripBooking);
-			customer.setTripBookingList(bookedTripForCustomer);
-			customerRepository2.save(customer);
-
-
+			availableDriver.getTripBookingList().add(tripBooking);
 			driverRepository2.save(availableDriver);
 
 
+			// in customer tripBookingList
+			customer.getTripBookingList().add(tripBooking);
+			customerRepository2.save(customer);
 
 		return tripBooking;
 	}
